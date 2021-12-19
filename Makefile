@@ -21,12 +21,19 @@ LIBS =
 all: pspvalloc pspvram
 
 pspvalloc:
-	rm -f *.o $(TARGET_LIB_VALLOC)
 	make TARGET_LIB=$(TARGET_LIB_VALLOC) OBJS=$(VALLOC_OBJS) $(TARGET_LIB_VALLOC)
 
 pspvram:
-	rm -f *.o $(TARGET_LIB_VRAM)
 	make TARGET_LIB=$(TARGET_LIB_VRAM) OBJS=$(VRAM_OBJS) $(TARGET_LIB_VRAM)
+
+clean-valloc:
+	rm -f *.o $(TARGET_LIB_VALLOC)
+
+clean-vram:
+	rm -f *.o $(TARGET_LIB_VRAM)
+
+clean: clean-valloc clean-vram
+
 
 PSPSDK=$(shell psp-config --pspsdk-path)
 PSPDIR=$(shell psp-config --psp-prefix)
