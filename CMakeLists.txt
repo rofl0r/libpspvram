@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.0)
 
-project(libpspvram)
+project(libpspvram C)
 
 if(NOT PSP)
     message(FATAL_ERROR "These libraries can only be build for the PSP")
