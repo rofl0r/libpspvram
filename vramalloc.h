@@ -8,8 +8,8 @@
  * Copyright (c) 2006 Alexander Berl <a.berl@gmx.de>
  *
  */
-#ifndef _vramalloc_H
-#define _vramalloc_H
+#ifndef _VRAMALLOC_H
+#define _VRAMALLOC_H
 
 #include <stddef.h>
 
@@ -40,4 +40,4 @@ size_t vlargestblock();
 }
 #endif
 
-#endif	// _vramalloc_H
+#endif	// _VRAMALLOC_H
