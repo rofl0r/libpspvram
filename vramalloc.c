@@ -3,7 +3,7 @@
  * -----------------------------------------------------------------------
  * Licensed as 'free to use and modify as long as credited appropriately'
  *
- * valloc.c - Standard C library VRAM allocation routines.
+ * vramalloc.c - Standard C library VRAM allocation routines.
  *
  * Copyright (c) 2006 Alexander Berl <a.berl@gmx.de>
  *
@@ -12,10 +12,10 @@
 //#include <pspkernel.h>
 #include <pspgu.h>
 #include <malloc.h>
-#include "valloc.h"
+#include "vramalloc.h"
 
 
-/* Use this to set the default valloc() alignment. */
+/* Use this to set the default vramalloc() alignment. */
 #define DEFAULT_VALIGNMENT	16
 
 #ifndef ALIGN
@@ -36,9 +36,9 @@ typedef struct _vram_mem_header {
 
 
 
-void * __valloc_vram_base = (void*)0;
-vram_mem_header_t *__valloc_vram_head = NULL;
-vram_mem_header_t *__valloc_vram_tail = NULL;
+void * __vramalloc_vram_base = (void*)0;
+vram_mem_header_t *__vramalloc_vram_head = NULL;
+vram_mem_header_t *__vramalloc_vram_tail = NULL;
 
 
 
@@ -108,7 +108,7 @@ vram_mem_header_t * _vram_mem_fit(vram_mem_header_t *head, size_t size)
 	return best_fit;
 }
 
-void * valloc(size_t size)
+void * vramalloc(size_t size)
 {
 	void *ptr = NULL;
 	vram_mem_header_t *new_mem, *prev_mem;
@@ -121,48 +121,48 @@ void * valloc(size_t size)
 
 
 	/* If we don't have any allocated blocks, reserve the first block
-	   and initialize __valloc_vram_tail.  */
-	if (__valloc_vram_head == NULL) {
+	   and initialize __vramalloc_vram_tail.  */
+	if (__vramalloc_vram_head == NULL) {
 		if (size>VRAM_SIZE)
 			return ptr;
 
-		__valloc_vram_head = (vram_mem_header_t *)malloc( sizeof(vram_mem_header_t) );
-		if (__valloc_vram_head == NULL)
+		__vramalloc_vram_head = (vram_mem_header_t *)malloc( sizeof(vram_mem_header_t) );
+		if (__vramalloc_vram_head == NULL)
 			return ptr;
 
-		ptr = (void *)__valloc_vram_base;
+		ptr = (void *)__vramalloc_vram_base;
 
 
-		__valloc_vram_head->ptr  = ptr;
-		__valloc_vram_head->size = mem_sz;
-		__valloc_vram_head->prev = NULL;
-		__valloc_vram_head->next = NULL;
+		__vramalloc_vram_head->ptr  = ptr;
+		__vramalloc_vram_head->size = mem_sz;
+		__vramalloc_vram_head->prev = NULL;
+		__vramalloc_vram_head->next = NULL;
 
-		__valloc_vram_tail = __valloc_vram_head;
+		__vramalloc_vram_tail = __vramalloc_vram_head;
 		
 		return vabsptr(ptr);
 	}
 
 	/* Check to see if there's free space at the bottom of the heap.
 	   NOTE: This case is now already handled in _vram_mem_fit */
-	/*if (((u32)__valloc_vram_head->ptr + __valloc_vram_head->size + mem_sz) < VRAM_SIZE) {
+	/*if (((u32)__vramalloc_vram_head->ptr + __vramalloc_vram_head->size + mem_sz) < VRAM_SIZE) {
 		new_mem = (vram_mem_header_t *)malloc( sizeof(vram_mem_header_t) );
 		if (new_mem == NULL)
 			return ptr;
-		ptr     = (void *)((u32)__valloc_vram_head->ptr + __valloc_vram_head->size);
+		ptr     = (void *)((u32)__vramalloc_vram_head->ptr + __vramalloc_vram_head->size);
 
 		new_mem->ptr  = ptr;
 		new_mem->size = mem_sz;
 		new_mem->prev = NULL;
-		new_mem->next = __valloc_vram_head;
+		new_mem->next = __vramalloc_vram_head;
 		new_mem->next->prev = new_mem;
-		__valloc_vram_head = new_mem;
+		__vramalloc_vram_head = new_mem;
 		
 		return ptr;
 	}*/
 
 	/* See if we can allocate the block anywhere. */
-	prev_mem = _vram_mem_fit(__valloc_vram_head, mem_sz);
+	prev_mem = _vram_mem_fit(__vramalloc_vram_head, mem_sz);
 	if (prev_mem != NULL) {
 		new_mem = (vram_mem_header_t *)malloc( sizeof(vram_mem_header_t) );
 		if (new_mem == NULL)
@@ -176,8 +176,8 @@ void * valloc(size_t size)
 		  new_mem->prev->next = new_mem;
 		new_mem->next = prev_mem;
 		prev_mem->prev = new_mem;
-		if (prev_mem == __valloc_vram_head)
-		  __valloc_vram_head = new_mem;
+		if (prev_mem == __vramalloc_vram_head)
+		  __vramalloc_vram_head = new_mem;
 
 		return vabsptr(ptr);
 	}
@@ -200,29 +200,29 @@ void vfree(void *ptr)
 	if (!ptr)
 		return;
 	
-	if (!__valloc_vram_head)
+	if (!__vramalloc_vram_head)
 		return;
 
 	ptr = vrelptr(ptr);
 
 	/* Freeing the head pointer is a special case.  */
-	if (ptr == __valloc_vram_head->ptr) {
+	if (ptr == __vramalloc_vram_head->ptr) {
 
-		cur = __valloc_vram_head->next;
-		free(__valloc_vram_head);
+		cur = __vramalloc_vram_head->next;
+		free(__vramalloc_vram_head);
 
-		__valloc_vram_head = cur;
+		__vramalloc_vram_head = cur;
 
-		if (__valloc_vram_head != NULL) {
-			__valloc_vram_head->prev = NULL;
+		if (__vramalloc_vram_head != NULL) {
+			__vramalloc_vram_head->prev = NULL;
 		} else {
-			__valloc_vram_tail = NULL;
+			__vramalloc_vram_tail = NULL;
 		}
 		
 		return;
 	}
 
-	cur = __valloc_vram_head;
+	cur = __vramalloc_vram_head;
 	while (ptr != cur->ptr)  {
 		/* ptr isn't in our list */
 		if (cur->next == NULL) {
@@ -236,7 +236,7 @@ void vfree(void *ptr)
 		cur->next->prev = cur->prev;
 	} else {
 		/* If this block was the last one in the list, shrink the heap.  */
-		__valloc_vram_tail = cur->prev;
+		__vramalloc_vram_tail = cur->prev;
 	}
 
 	cur->prev->next = cur->next;
@@ -247,13 +247,13 @@ void vfree(void *ptr)
 
 size_t vmemavail()
 {
-	if (__valloc_vram_head==NULL)
+	if (__vramalloc_vram_head==NULL)
 		return VRAM_SIZE;
 	
 	vram_mem_header_t *cur;
-	size_t size = VRAM_SIZE - ((u32)__valloc_vram_head->ptr + __valloc_vram_head->size);
+	size_t size = VRAM_SIZE - ((u32)__vramalloc_vram_head->ptr + __vramalloc_vram_head->size);
 
-	cur = __valloc_vram_head;
+	cur = __vramalloc_vram_head;
 	while (cur->next!=NULL)  {
 		size += (u32)cur->ptr - ((u32)cur->next->ptr + cur->next->size);
 		cur = cur->next;
@@ -265,14 +265,14 @@ size_t vmemavail()
 
 size_t vlargestblock()
 {
-	if (__valloc_vram_head==NULL)
+	if (__vramalloc_vram_head==NULL)
 		return VRAM_SIZE;
 	
 	vram_mem_header_t *cur;
-	size_t size = VRAM_SIZE - ((u32)__valloc_vram_head->ptr + __valloc_vram_head->size);
+	size_t size = VRAM_SIZE - ((u32)__vramalloc_vram_head->ptr + __vramalloc_vram_head->size);
 	size_t new_size;
 
-	cur = __valloc_vram_head;
+	cur = __vramalloc_vram_head;
 	while (cur->next!=NULL)  {
 		new_size = (u32)cur->ptr - ((u32)cur->next->ptr + cur->next->size);
 		if (new_size>size) size = new_size;

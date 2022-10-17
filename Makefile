@@ -2,11 +2,11 @@
 ## libpspvram library makefile
 ###
 
-TARGET_LIB_VALLOC = libpspvalloc.a
+TARGET_LIB_vramalloc = libpspvramalloc.a
 TARGET_LIB_VRAM   = libpspvram.a
 TARGET_LIB = $(TARGET_LIB_VRAM)
 
-VALLOC_OBJS = valloc.o
+vramalloc_OBJS = vramalloc.o
 VRAM_OBJS   = vram.o
 
 INCDIR = 
@@ -18,29 +18,29 @@ ASFLAGS = $(CFLAGS)
 LDFLAGS =
 LIBS = 
 
-all: pspvalloc pspvram
+all: pspvramalloc pspvram
 
-pspvalloc:
-	make TARGET_LIB=$(TARGET_LIB_VALLOC) OBJS=$(VALLOC_OBJS) $(TARGET_LIB_VALLOC)
+pspvramalloc:
+	make TARGET_LIB=$(TARGET_LIB_vramalloc) OBJS=$(vramalloc_OBJS) $(TARGET_LIB_vramalloc)
 
 pspvram:
 	make TARGET_LIB=$(TARGET_LIB_VRAM) OBJS=$(VRAM_OBJS) $(TARGET_LIB_VRAM)
 
-clean-valloc:
-	rm -f *.o $(TARGET_LIB_VALLOC)
+clean-vramalloc:
+	rm -f *.o $(TARGET_LIB_vramalloc)
 
 clean-vram:
 	rm -f *.o $(TARGET_LIB_VRAM)
 
-clean: clean-valloc clean-vram
+clean: clean-vramalloc clean-vram
 
 
 PSPSDK=$(shell psp-config --pspsdk-path)
 PSPDIR=$(shell psp-config --psp-prefix)
 include $(PSPSDK)/lib/build.mak
 
-install: pspvalloc pspvram
-	@cp -v $(TARGET_LIB_VRAM) $(TARGET_LIB_VALLOC) $(PSPDIR)/lib
+install: pspvramalloc pspvram
+	@cp -v $(TARGET_LIB_VRAM) $(TARGET_LIB_vramalloc) $(PSPDIR)/lib
 	@cp -v *.h $(PSPDIR)/include
 	@echo "Done."
 

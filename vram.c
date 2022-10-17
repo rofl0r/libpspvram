@@ -100,7 +100,7 @@ void __memwalk()
 }
 #endif
 
-void* valloc( size_t size )
+void* vramalloc( size_t size )
 {
 	// Initialize memory block, if not yet done
 	if (__mem_blocks[0]==0) __mem_blocks[0] = __BLOCK0;

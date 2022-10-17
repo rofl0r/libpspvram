@@ -8,8 +8,8 @@ endif()
 
 add_compile_options(-G0 -mno-explicit-relocs -O2 -Wall -Werror -g)
 
-add_library(pspvalloc valloc.c)
+add_library(pspvramalloc vramalloc.c)
 add_library(pspvram vram.c)
 
-install(TARGETS pspvalloc pspvram DESTINATION lib)
-install(FILES valloc.h vram.h DESTINATION include)
+install(TARGETS pspvramalloc pspvram DESTINATION lib)
+install(FILES vramalloc.h vram.h DESTINATION include)

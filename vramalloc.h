@@ -3,13 +3,13 @@
  * -----------------------------------------------------------------------
  * Licensed as 'free to use and modify as long as credited appropriately'
  *
- * valloc.c - Standard C library VRAM allocation routines.
+ * vramalloc.c - Standard C library VRAM allocation routines.
  *
  * Copyright (c) 2006 Alexander Berl <a.berl@gmx.de>
  *
  */
-#ifndef _VALLOC_H
-#define _VALLOC_H
+#ifndef _vramalloc_H
+#define _vramalloc_H
 
 #include <stddef.h>
 
@@ -29,7 +29,7 @@ void* vGuPointer( void* ptr );
 void* vCPUPointer( void* ptr );
 
 // Returns an absolute pointer useable by CPU
-void* valloc( size_t size );
+void* vramalloc( size_t size );
 void  vfree( void* ptr );
 
 size_t vmemavail();
@@ -40,4 +40,4 @@ size_t vlargestblock();
 }
 #endif
 
-#endif	// _VALLOC_H
+#endif	// _vramalloc_H
