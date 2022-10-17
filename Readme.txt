@@ -5,6 +5,8 @@ http://wordpress.fx-world.org
 
 This library provides two different versions of a dynamic VRAM allocation manager, namely libpspvram and libpspvramalloc.
 
+**Note for the people already using libpspvram, valloc has been renamed to vramalloc! Please update your applications!**
+
 The two versions differ in the following specifics:
 -vramalloc uses dynamic system ram allocation for the management structures (hence may contribute to fragmentation and is slower for allocations/frees)
 -vramalloc aligns on 16byte default, while vram allocates on 512byte default (hence vram has a little overhead for allocations not a multiple of 512byte)
