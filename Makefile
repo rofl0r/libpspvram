@@ -10,7 +10,7 @@ vramalloc_OBJS = vramalloc.o
 VRAM_OBJS   = vram.o
 
 INCDIR = 
-CFLAGS = -G0 -mno-explicit-relocs -O2 -Wall -Werror -g
+CFLAGS = -mno-gpopt -mno-explicit-relocs -O2 -Wall -Werror -g
 
 CXXFLAGS = $(CFLAGS) -fno-exceptions -fno-rtti
 ASFLAGS = $(CFLAGS)
