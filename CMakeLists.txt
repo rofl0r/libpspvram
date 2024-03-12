@@ -6,7 +6,7 @@ if(NOT PSP)
     message(FATAL_ERROR "These libraries can only be build for the PSP")
 endif()
 
-add_compile_options(-G0 -mno-explicit-relocs -O2 -Wall -Werror -g)
+add_compile_options(-O2 -mno-gpopt -Wall -g)
 
 add_library(pspvramalloc vramalloc.c)
 add_library(pspvram vram.c)
