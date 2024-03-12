@@ -10,7 +10,7 @@ vramalloc_OBJS = vramalloc.o
 VRAM_OBJS   = vram.o
 
 INCDIR = 
-CFLAGS = -mno-gpopt -mno-explicit-relocs -O2 -Wall -Werror -g
+CFLAGS = -O2 -mno-gpopt -Wall -g
 
 CXXFLAGS = $(CFLAGS) -fno-exceptions -fno-rtti
 ASFLAGS = $(CFLAGS)
@@ -35,8 +35,8 @@ clean-vram:
 clean: clean-vramalloc clean-vram
 
 
-PSPSDK=$(shell psp-config --pspsdk-path)
-PSPDIR=$(shell psp-config --psp-prefix)
+PSPSDK:=$(shell psp-config --pspsdk-path)
+PSPDIR:=$(shell psp-config --psp-prefix)
 include $(PSPSDK)/lib/build.mak
 
 install: pspvramalloc pspvram
